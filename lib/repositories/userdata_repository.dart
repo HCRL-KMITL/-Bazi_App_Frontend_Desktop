@@ -41,7 +41,7 @@ class UserDataRepository {
       "birth_date": "$birthDate $birthTime",
       "gender": gender,
     };
-    //print("PUT Request: $request");
+    print("PUT Request: $request");
     await http.put(
       Uri.parse('$apiUrl/users/'),
       headers: {
