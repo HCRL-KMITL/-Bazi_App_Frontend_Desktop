@@ -24,9 +24,10 @@ Map<String, String> thaiElement = {
   "Metal": "ทอง",
   "Water": "น้ำ"
 };
+
 Map<String, String> thaiYinyang = {
-  "Yin": "หยิน(-)",
-  "Yang": "หยาง(+)",
+  "Yin": "หยิน (-)",
+  "Yang": "หยาง (+)",
 };
 
 // HANDLE YAM \\

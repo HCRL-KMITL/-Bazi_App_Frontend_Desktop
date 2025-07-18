@@ -23,29 +23,64 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        body: SafeArea(
+    body: Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/wallpaper.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+        SafeArea(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/welcome_pic.png',
-                  scale: 1.1,
+                const Text(
+                    'BAZI',
+                    style: TextStyle(
+                      fontFamily: 'CinzelDecorative',
+                      fontSize: 70,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 7.0,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(3, 3),     
+                          blurRadius: 6.0,          
+                          color: Colors.black45,
+                        ),
+                      ],
+                    ),
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(right: screenWidth * 0.15),
+                  child: const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'APP',
+                      style: TextStyle(
+                        fontFamily: 'CinzelDecorative',
+                        fontSize: 40,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        shadows: [
+                        Shadow(
+                          offset: Offset(3, 3),     
+                          blurRadius: 6.0,          
+                          color: Colors.black45,
+                        ),
+                      ],
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "ยินดีต้อนรับสู่ Bazi Harmony",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium!
-                      .copyWith(color: wColor),
-                ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: screenHeight * 0.05,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -70,8 +105,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                    height: screenHeight * 0.02,
                 ),
                 GestureDetector(
                   onTap: () => showDialog(
@@ -110,57 +145,70 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          final DateTime? pickedDate =
-                                              await showDatePicker(
-                                                  context: context,
-                                                  firstDate: DateTime(1900),
-                                                  lastDate: DateTime.now());
-                                          if (pickedDate != null &&
-                                              pickedDate != DateTime.now()) {
+                                          final DateTime? pickedDate = await showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                            builder: (BuildContext dialogContext, Widget? child) {
+                                              return Theme(
+                                                data: Theme.of(dialogContext).copyWith(
+                                                  colorScheme: const ColorScheme.light(
+                                                    primary: Color.fromARGB(255, 45, 66, 98),
+                                                  ),
+                                                ),
+                                                child: child!,
+                                              );
+                                            },
+                                          );
+                                          if (pickedDate != null && pickedDate != DateTime.now()) {
                                             setState(() {
-                                              dateController.text =
-                                                  DateFormat('yyyy-MM-dd')
-                                                      .format(pickedDate);
+                                              dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
                                               debugPrint(dateController.text);
                                             });
                                           }
                                         },
                                         child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.3,
+                                          width: MediaQuery.of(context).size.width * 0.3,
                                           child: TextField(
                                             controller: dateController,
                                             enabled: false,
                                             decoration: const InputDecoration(
-                                                labelText: "เลือกวันเกิด"),
+                                              labelText: "เลือกวันเกิด",
+                                            ),
                                           ),
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: () async {
-                                          final TimeOfDay? timePicked =
-                                              await showTimePicker(
-                                                  context: context,
-                                                  initialTime: TimeOfDay.now(),
-                                                  builder: (context, child) {
-                                                    return MediaQuery(
-                                                        data: MediaQuery.of(
-                                                                context)
-                                                            .copyWith(
-                                                                alwaysUse24HourFormat:
-                                                                    true),
-                                                        child: child!);
-                                                  });
-                                          if (timePicked != null &&
-                                              timePicked != TimeOfDay.now()) {
+                                          final TimeOfDay? timePicked = await showTimePicker(
+                                            context: context,
+                                            initialTime: TimeOfDay.now(),
+                                            builder: (context, child) {
+                                              return Theme(
+                                                data: Theme.of(context).copyWith(
+                                                  colorScheme: const ColorScheme.light(
+                                                    primary: Color.fromARGB(255, 45, 66, 98),                
+                                                  ),
+                                                  timePickerTheme: const TimePickerThemeData(
+                                                    backgroundColor: Colors.white,                 
+                                                  ),
+                                                ),
+                                                child: MediaQuery(
+                                                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                  child: child!,
+                                                ),
+                                              );
+                                            },
+                                          );
+
+                                          if (timePicked != null) {
                                             setState(() {
                                               timeController.text =
                                                   "${timePicked.hour.toString().padLeft(2, '0')}:${timePicked.minute.toString().padLeft(2, '0')}:00";
                                             });
                                           }
                                         },
+
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
                                                   .size
@@ -255,6 +303,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ],
             ),
           ),
-        ));
+        ),
+      ],
+    ),
+  );
   }
 }

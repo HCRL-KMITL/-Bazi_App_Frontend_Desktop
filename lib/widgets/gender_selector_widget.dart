@@ -49,7 +49,7 @@ class _GenderSelectorWidgetState extends State<GenderSelectorWidget> {
             height: 40,
             decoration: BoxDecoration(
                 color: selectedGender == 1
-                    ? fcolor
+                    ? Theme.of(context).primaryColor
                     : Theme.of(context).disabledColor,
                 borderRadius: BorderRadius.circular(20)),
             child: Icon(

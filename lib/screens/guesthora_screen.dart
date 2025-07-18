@@ -40,11 +40,11 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: wColor,
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
-          "Bazi Chart",
-        ),
+        foregroundColor: wColor,
+        elevation: 15,
+        shadowColor: const Color.fromARGB(255, 221, 52, 40),
+        title: const Text("Bazi Chart"),
       ),
       body: FutureBuilder<BaziChart>(
         future: futureBaziChart, // Future to fetch BaziChart
@@ -70,40 +70,72 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
             BaziChart baziChart = snapshot.data!;
             String element = baziChart.dayPillar.heavenlyStem.name;
             return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
+              child: Center(
+                // padding: const EdgeInsets.all(15),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 20),
                     Center(
                       child: Text(
                         "ผลการทำนาย",
-                        style: Theme.of(context).textTheme.headlineMedium,
+                        style: Theme.of(context).textTheme.headlineMediumRed,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(
-                          widget.gender == 0 ? Icons.male : Icons.female,
-                          size: 40,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            widget.gender == 0 ? Icons.male : Icons.female,
+                            size: 40,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
                             "${widget.name}, ${MiscRepository().displayThaiDate(widget.birthDate)} ${widget.birthTime.substring(0, 5)} น.",
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: Theme.of(context).textTheme.bodyLargeRed,
                             softWrap: true,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: personalElementText(context, element)
+                    // const SizedBox(height: 20),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.asset(
+                              'assets/images/fream.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 130),
+                                SizedBox(
+                                  child: personalElementText(context, element),
+                                ),
+                                FourPillarTable(chart: baziChart),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    FourPillarTable(chart: baziChart),
+
+
+                    // Center(
+                    //   child: personalElementText(context, element)
+                    // ),
+                    // FourPillarTable(chart: baziChart),
                     const SizedBox(height: 30),
                     Text(
                       "ลักษณะนิสัย",
@@ -135,6 +167,8 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                         100,
                         HoraRepository().getBaseHora(element)["occupation"]),
                     const SizedBox(height: 30),
+
+
                     // Center(
                     //   child: Container(
                     //     width: MediaQuery.of(context).size.width * 0.75,
