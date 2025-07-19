@@ -26,39 +26,80 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return SafeArea(
         child: Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              "ปฏิทินวันดีประจำปี ${DateTime.now().year + 543}",
-              style: Theme.of(context).textTheme.headlineMedium,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                "ปฏิทินวันดีประจำปี ${DateTime.now().year + 543}",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.5,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).disabledColor),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: DropdownButton(
-                underline: const SizedBox(),
-                isExpanded: true,
-                value: monthValue[selectedMonth],
-                items: items,
-                onChanged: (value) {
-                  setState(() {
-                    selectedMonth = int.parse(value!) - 1;
-                  });
-                }),
-          ),
-          const SizedBox(height: 10),
-          Text("สีน้ำเงิน = วันปัจจุบัน, สีเขียว = วันดี, สีแดง = วันอริ",
-              style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 20),
-          LuckCalendarWidget(selectedMonth: selectedMonth),
-        ],
+            const SizedBox(height: 50),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).primaryColor),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: DropdownButton(
+                  underline: const SizedBox(),
+                  isExpanded: true,
+                  iconEnabledColor: Colors.white,
+                  value: monthValue[selectedMonth],
+                  items: items,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = int.parse(value!) - 1;
+                    });
+                  }),
+            ),
+            const SizedBox(height: 35),
+            LuckCalendarWidget(selectedMonth: selectedMonth),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).focusColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('วันนี้'),
+                  const SizedBox(width: 20),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF316141),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('วันดี'),
+                  const SizedBox(width: 20),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('วันอริ'),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     ));
   }
