@@ -49,6 +49,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       }
     }
     print("Today Hora: $horaToday");
+    if (!mounted) return; // ป้องกัน setState หลัง dispose
     setState(() {
       todayHora = horaToday;
       bestTime = bestTimeIndex;

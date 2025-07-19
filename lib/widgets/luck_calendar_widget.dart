@@ -19,64 +19,89 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
-        future: HoraRepository().getCalendarData(widget.selectedMonth + 1),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: loadingWidget(),
+      future: HoraRepository().getCalendarData(widget.selectedMonth + 1),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: loadingWidget());
+        } else if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text("เกิดข้อผิดพลาดในการดึงข้อมูล"),
             );
-          } else if (snapshot.hasData) {
-            if (snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text("เกิดข้อผิดพลาดในการดึงข้อมูล"),
-              );
-            } else {
-              return Expanded(
-                child: TableCalendar(
-                  calendarStyle: CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                      color: fcolor,
-                      shape: BoxShape.circle,
-                    ),
+          } else {
+            return Expanded(
+              child: TableCalendar(
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: fcolor,
+                    shape: BoxShape.circle,
                   ),
-                  locale: 'th_TH',
-                  focusedDay:
-                      DateTime(currentYear, widget.selectedMonth + 1, 1),
-                  firstDay: DateTime.utc(
-                      DateTime.now().year, widget.selectedMonth + 1, 1),
-                  lastDay: DateTime.utc(
-                      DateTime.now().year, widget.selectedMonth + 1, 31),
-                  availableGestures: AvailableGestures.none,
-                  headerVisible: false,
-                  calendarFormat: CalendarFormat.month,
-                  calendarBuilders: CalendarBuilders(
-                      defaultBuilder: (context, day, focusedDay) {
-                    return Container(
-                      margin: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: snapshot.data!["goodDate"].contains(day.day)
-                            ? Colors.lightGreen[300]
-                            : snapshot.data!["badDate"].contains(day.day)
-                                ? Colors.red[300]
-                                : Theme.of(context).disabledColor,
+                ),
+                daysOfWeekHeight: 40,
+                locale: 'th_TH',
+                focusedDay: DateTime(currentYear, widget.selectedMonth + 1, 1),
+                firstDay: DateTime.utc(
+                    DateTime.now().year, widget.selectedMonth + 1, 1),
+                lastDay: DateTime.utc(
+                    DateTime.now().year, widget.selectedMonth + 1, 31),
+                availableGestures: AvailableGestures.none,
+                headerVisible: false,
+                calendarFormat: CalendarFormat.month,
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, focusedDay) {
+                    final isGood = snapshot.data!["goodDate"].contains(day.day);
+                    final isBad = snapshot.data!["badDate"].contains(day.day);
+
+                    final BoxDecoration decoration;
+                    final Color textColor;
+
+                    if (isGood) {
+                      decoration = const BoxDecoration(
+                        color: Color(0xFF316141),
                         shape: BoxShape.circle,
-                      ),
+                      );
+                      textColor = Colors.white;
+                    } else if (isBad) {
+                      decoration = BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                      );
+                      textColor = Colors.white;
+                    } else {
+                      decoration = BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Color(0xFF862D2D), width: 1.5),
+                      );
+                      textColor = Colors.black;
+                    }
+
+                    return Container(
+                      width: 38,
+                      height: 38,
+                      decoration: decoration,
                       child: Center(
                         child: Text(
                           day.day.toString(),
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: textColor),
                         ),
                       ),
                     );
-                  }),
+                  },
                 ),
-              );
-            }
-          } else {
-            return SizedBox(
-              child: Text("Error ${snapshot.error}"),
+              ),
             );
           }
-        });
+        } else {
+          return SizedBox(
+            child: Text("Error ${snapshot.error}"),
+          );
+        }
+      },
+    );
   }
 }
