@@ -59,7 +59,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             const SizedBox(height: 35),
             LuckCalendarWidget(selectedMonth: selectedMonth),
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

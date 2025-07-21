@@ -72,7 +72,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                         color: Colors.transparent,
                         shape: BoxShape.circle,
                         border:
-                            Border.all(color: Color(0xFF862D2D), width: 1.5),
+                            Border.all(color: const Color(0xFF862D2D), width: 1.5),
                       );
                       textColor = Colors.black;
                     }

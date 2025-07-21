@@ -45,3 +45,9 @@ flutter:
           weight: 700
         - asset: assets/fonts/CinzelDecorative-Black.ttf
           weight: 900
+    - family: ChironSungHK
+      fonts:
+        - asset: assets/fonts/ChironSungHK-VariableFont_wght.ttf
+          weight: 900
+        - asset: assets/fonts/ChironSungHK-Italic-VariableFont_wght.ttf
+          style: italic
