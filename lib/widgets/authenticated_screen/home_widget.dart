@@ -60,7 +60,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(25.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,10 +94,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                       icon: const Icon(Icons.logout)),
                 ],
               ),
-              const SizedBox(height: 15),
-              Center(
-                child: Text("คะแนนประจำวันของคุณ",
-                    style: Theme.of(context).textTheme.headlineMedium),
+              const SizedBox(height: 30),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "คะแนนประจำวันของคุณ",
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
               ),
               const SizedBox(height: 10),
               Center(
@@ -105,26 +108,53 @@ class _HomeWidgetState extends State<HomeWidget> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).disabledColor,
                     borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 2)
                   ),
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: 200,
+                  height: 180,
                   child: todayHora.isEmpty
                       ? const Center(child: Text("กำลังโหลด..."))
                       : TodayHoraChart(h: todayHora["hours"]),
                 ),
               ),
-              const SizedBox(height: 5),
-              RichText(
-                  text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      children: [
-                    const TextSpan(
-                        text: "ช่วงเวลาที่ดีที่สุดสำหรับคุณในวันนี้คือ "),
-                    TextSpan(
-                        text: bestTime.join(", "),
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ])),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "ช่วงเวลาที่ดีที่สุดสำหรับคุณในวันนี้คือ",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  GridView.count(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 10,
+                    shrinkWrap: true, //เนื้อหาไม่เกินกรอบ
+                    childAspectRatio: 1.9,
+                    physics: const NeverScrollableScrollPhysics(), //ป้องกันการ column ทับกัน
+                    children: bestTime.map((time) {
+                      return Container(
+                        padding: const EdgeInsets.all(0),
+                        decoration: BoxDecoration(
+                          color: fcolor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            time!,
+                            style: const TextStyle(
+                              color: wColor,
+                              fontSize: 15
+                            ),
+                          ),
+                        )
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 25),
               Row(
                 children: [
                   Text("สีประจำวัน ",
@@ -142,7 +172,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         .toList()),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
               Text("พยากรณ์ประจำเดือน",
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 10),
