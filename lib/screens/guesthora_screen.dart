@@ -85,24 +85,34 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                     ),
                     const SizedBox(height: 10),
                     Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min, // เพื่อไม่ให้เต็มพื้นที่แนวตั้ง
                         children: [
-                          Icon(
-                            widget.gender == 0 ? Icons.male : Icons.female,
-                            size: 40,
-                            color: Theme.of(context).primaryColor,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                widget.gender == 0 ? Icons.male : Icons.female,
+                                size: 40,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                _shortenName(widget.name),
+                                style: Theme.of(context).textTheme.bodyLargeRed,
+                                softWrap: true,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 10),
                           Text(
-                            "${widget.name}, ${MiscRepository().displayThaiDate(widget.birthDate)} ${widget.birthTime.substring(0, 5)} น.",
+                            "${MiscRepository().displayThaiDate(widget.birthDate)} ${widget.birthTime.substring(0, 5)} น.",
                             style: Theme.of(context).textTheme.bodyLargeRed,
                             softWrap: true,
                           ),
                         ],
                       ),
                     ),
-                    // const SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.7,
@@ -114,7 +124,7 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Center(
+                         Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,44 +140,79 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                         ],
                       ),
                     ),
-
-
-                    // Center(
-                    //   child: personalElementText(context, element)
-                    // ),
-                    // FourPillarTable(chart: baziChart),
                     const SizedBox(height: 30),
-                    Text(
-                      "ลักษณะนิสัย",
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.accessibility,
+                                color: wColor,
+                              ),
+                              const SizedBox(width: 8), 
+                              Text(
+                                "ลักษณะนิสัย",
+                                style: Theme.of(context).textTheme.headlineSmallW,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            HoraRepository().getBaseHora(element)[element]["pros"],
+                            style: const TextStyle(color: wColor),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.thumb_down,
+                                color: wColor,
+                              ),
+                              const SizedBox(width: 8), 
+                              Text(
+                                "ข้อเสีย",
+                                style: Theme.of(context).textTheme.headlineSmallW,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            HoraRepository().getBaseHora(element)[element]["cons"],
+                            style: const TextStyle(color: wColor),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.badge,
+                                color: wColor,
+                              ),
+                              const SizedBox(width: 8), 
+                              Text(
+                                "อาชีพที่เหมาะสม",
+                                style: Theme.of(context).textTheme.headlineSmallW,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            HoraRepository().getBaseHora(element)["occupation"],
+                            style: const TextStyle(color: wColor),
+                          ),
+                        ],
+                      ),
                     ),
-                    textContainer(
-                        Theme.of(context).textTheme.bodySmall!,
-                        MediaQuery.of(context).size.width * 0.9,
-                        100,
-                        HoraRepository().getBaseHora(element)[element]["pros"]),
-                    const SizedBox(height: 10),
-                    Text(
-                      "ข้อเสีย",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    textContainer(
-                        Theme.of(context).textTheme.bodySmall!,
-                        MediaQuery.of(context).size.width * 0.9,
-                        100,
-                        HoraRepository().getBaseHora(element)[element]["cons"]),
-                    const SizedBox(height: 10),
-                    Text(
-                      "อาชีพที่เหมาะสม",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    textContainer(
-                        Theme.of(context).textTheme.bodySmall!,
-                        MediaQuery.of(context).size.width * 0.9,
-                        100,
-                        HoraRepository().getBaseHora(element)["occupation"]),
-                    const SizedBox(height: 30),
-
 
                     // Center(
                     //   child: Container(
@@ -196,5 +241,13 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
         },
       ),
     );
+  }
+}
+  
+String _shortenName(String name, {int maxLength = 25}) {
+  if (name.length <= maxLength) {
+    return name;
+  } else {
+    return '${name.substring(0, maxLength)}...';
   }
 }

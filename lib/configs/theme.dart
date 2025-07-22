@@ -74,4 +74,12 @@ extension CustomTextTheme on TextTheme {
         color: primaryColor,
       ),
     );
+
+    TextStyle get headlineSmallW => GoogleFonts.kanit(
+      textStyle: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: wColor,
+      ),
+    );
 }
