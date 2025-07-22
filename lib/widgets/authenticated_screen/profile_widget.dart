@@ -18,7 +18,6 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   final currentUser = FirebaseAuth.instance.currentUser;
-  
 
   @override
   void initState() {
@@ -28,134 +27,113 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: SingleChildScrollView(
-      child: Padding(
-          padding: const EdgeInsets.all(10),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Center(
-              child: Text("ข้อมูลส่วนตัว",
-                  style: Theme.of(context).textTheme.headlineLarge),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 135,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Theme.of(context).disabledColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(children: [
-                Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(currentUser!.photoURL!),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 250,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profile_background.png'),
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      widget.userData.email,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(widget.userData.name,
-                            style: Theme.of(context).textTheme.headlineSmall),
-                        const SizedBox(width: 5),
-                        Icon(widget.userData.gender == 0
-                            ? Icons.male
-                            : Icons.female)
-                      ],
-                    ),
-                    Text(
-                        "${MiscRepository().displayThaiDate(widget.userData.birthDate.split(" ")[0])}, ${widget.userData.birthDate.split(" ")[1].substring(0, 5)} น.",
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const Spacer(),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: fcolor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditInfoWidget(
-                                    oldData: widget.userData,
-                                  )));
-                        },
-                        child: Text(
-                          "แก้ไขข้อมูล",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: wColor),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Theme.of(context).primaryColor, width: 3),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          currentUser!.photoURL!,
+                          width: 150,
+                          height: 150,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ]),
+                Center(
+                  child: Text("ข้อมูลส่วนตัว",
+                      style: Theme.of(context).textTheme.headlineLarge),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            Text("ธาตุประจำตัวและลักษณะนิสัยของคุณ",
-                style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 20),
-            Center(
-              child: personalElementText(context,
-                  widget.userData.baziChart.dayPillar.heavenlyStem.name),
+            const SizedBox(
+              height: 5,
             ),
-            FourPillarTable(chart: widget.userData.baziChart),
-            const SizedBox(height: 30),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.userData.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(width: 5),
+                  Icon(
+                    widget.userData.gender == 0 ? Icons.male : Icons.female,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 5),
             Text(
-              "ลักษณะนิสัย",
-              style: Theme.of(context).textTheme.headlineSmall,
+              widget.userData.email,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Theme.of(context).primaryColor),
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
             ),
-            textContainer(
-                Theme.of(context).textTheme.bodySmall!,
-                MediaQuery.of(context).size.width * 0.95,
-                100,
-                HoraRepository().getBaseHora(
-                        widget.userData.baziChart.dayPillar.heavenlyStem.name)[
-                    widget.userData.baziChart.dayPillar.heavenlyStem
-                        .name]["pros"]),
-            const SizedBox(height: 10),
-            Text(
-              "ข้อเสีย",
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            textContainer(
-                Theme.of(context).textTheme.bodySmall!,
-                MediaQuery.of(context).size.width * 0.95,
-                100,
-                HoraRepository().getBaseHora(
-                        widget.userData.baziChart.dayPillar.heavenlyStem.name)[
-                    widget.userData.baziChart.dayPillar.heavenlyStem
-                        .name]["cons"]),
-            const SizedBox(height: 10),
-            Text(
-              "อาชีพที่เหมาะสม",
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            textContainer(
-                Theme.of(context).textTheme.bodySmall!,
-                MediaQuery.of(context).size.width * 0.95,
-                100,
-                HoraRepository().getBaseHora(widget.userData.baziChart.dayPillar
-                    .heavenlyStem.name)["occupation"]),
-          ])),
-    ));
+            Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    border: Border.all(
+                        color: Theme.of(context).primaryColor, width: 2),
+                    borderRadius: BorderRadius.circular(12)),
+                height: 350,
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Column(
+                  children: [
+                    Row(children: [
+                      Icon(Icons.calendar_today),
+                      Text(
+                          "${MiscRepository().displayThaiDate(widget.userData.birthDate.split(" ")[0])}, ${widget.userData.birthDate.split(" ")[1].substring(0, 5)} น.",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ]),
+                    Text(
+                      "การทำนายด้วยศาสตร์ บาจื้อ",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ))
+          ],
+        ),
+      ),
+    );
   }
 }
