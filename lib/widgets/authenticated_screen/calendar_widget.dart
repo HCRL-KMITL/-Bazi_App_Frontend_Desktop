@@ -1,6 +1,7 @@
 import 'package:bazi_app_frontend/constants/constants.dart';
 import 'package:bazi_app_frontend/widgets/luck_calendar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:bazi_app_frontend/configs/theme.dart';
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
@@ -45,16 +46,40 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   color: Theme.of(context).primaryColor),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: DropdownButton(
-                  underline: const SizedBox(),
-                  isExpanded: true,
-                  iconEnabledColor: Colors.white,
-                  value: monthValue[selectedMonth],
-                  items: items,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMonth = int.parse(value!) - 1;
-                    });
-                  }),
+                underline: const SizedBox(),
+                isExpanded: true,
+                iconEnabledColor: Colors.white,
+                value: monthValue[selectedMonth],
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black),
+                selectedItemBuilder: (BuildContext context) {
+                  return monthValue.map<Widget>((String i) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        thaiMonth[i] ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: wColor),
+                      ),
+                    );
+                  }).toList();
+                },
+                items: monthValue.map<DropdownMenuItem<String>>((String i) {
+                  return DropdownMenuItem<String>(
+                    value: i,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        thaiMonth[i] ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black),
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedMonth = int.parse(value!) - 1;
+                  });
+                },
+              ),
             ),
             const SizedBox(height: 35),
             LuckCalendarWidget(selectedMonth: selectedMonth),
