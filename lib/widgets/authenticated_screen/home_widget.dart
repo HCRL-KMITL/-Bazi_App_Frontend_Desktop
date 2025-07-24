@@ -7,10 +7,13 @@ import 'package:bazi_app_frontend/repositories/authentication_repository.dart';
 import 'package:bazi_app_frontend/repositories/hora_repository.dart';
 import 'package:bazi_app_frontend/widgets/monthly_prediction_widget.dart';
 import 'package:bazi_app_frontend/widgets/today_hora_chart_widget.dart';
+import 'package:bazi_app_frontend/widgets/forecast_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/uiw.dart';
+import 'package:intl/intl.dart';
+
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({required this.userData, super.key});
@@ -56,6 +59,13 @@ class _HomeWidgetState extends State<HomeWidget> {
     });
   }
 
+  String formatThaiDate(DateTime date) {
+    final thaiYear = date.year + 543;
+    final formatter = DateFormat('d MMMM', 'th');
+    final dayMonth = formatter.format(date);
+    return '$dayMonth $thaiYear';
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -73,25 +83,37 @@ class _HomeWidgetState extends State<HomeWidget> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    "สวัสดี! คุณ ${widget.userData.name}",
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        formatThaiDate(DateTime.now()),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        "สวัสดี! คุณ ${widget.userData.name}",
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
                   ),
                   const Spacer(),
                   IconButton(
-                      iconSize: 30,
-                      color: wColor,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor: WidgetStatePropertyAll(
-                              Theme.of(context).primaryColor)),
-                      onPressed: () async {
-                        await AuthenticationRepository().signOut();
-                      },
-                      icon: const Icon(Icons.logout)),
+                    iconSize: 30,
+                    color: wColor,
+                    style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
+                        backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).primaryColor)),
+                    onPressed: () async {
+                      await AuthenticationRepository().signOut();
+                    },
+                    icon: const Icon(Icons.logout)
+                  ),
                 ],
               ),
               const SizedBox(height: 30),
@@ -173,53 +195,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ],
               ),
               const SizedBox(height: 25),
-              Text("พยากรณ์ประจำเดือน",
-                  style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 10),
-              Text(
-                "สุขภาพ",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              MonthlyPredictionWidget(
-                  predText: todayHora["monthlyPrediction"]?["health"] ??
-                      "กำลังโหลด..."),
-              Text(
-                "ความรัก",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              MonthlyPredictionWidget(
-                  predText: todayHora["monthlyPrediction"]?["love"] ??
-                      "กำลังโหลด..."),
-              Text(
-                "การเงิน",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              MonthlyPredictionWidget(
-                  predText: todayHora["monthlyPrediction"]?["money"] ??
-                      "กำลังโหลด..."),
-              Text(
-                "การงาน",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              MonthlyPredictionWidget(
-                  predText: todayHora["monthlyPrediction"]?["work"] ??
-                      "กำลังโหลด..."),
+              ForecastTabs(todayHora: todayHora)
             ],
           ),
         ),
