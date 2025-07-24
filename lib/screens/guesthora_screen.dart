@@ -3,6 +3,8 @@ import 'package:bazi_app_frontend/models/bazichart_model.dart';
 import 'package:bazi_app_frontend/repositories/fourpillars_repository.dart';
 import 'package:bazi_app_frontend/repositories/hora_repository.dart';
 import 'package:bazi_app_frontend/repositories/misc_repository.dart';
+import 'package:bazi_app_frontend/screens/member_screen.dart';
+import 'package:bazi_app_frontend/screens/welcome_screen.dart';
 import 'package:bazi_app_frontend/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -38,12 +40,31 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: wColor,
         elevation: 15,
-        shadowColor: const Color.fromARGB(255, 221, 52, 40),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (args?['from'] == 'member') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MemberScreen(),
+                  ));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WelcomeScreen(),
+                  ));
+            }
+          },
+        ),
         title: const Text("Bazi Chart"),
       ),
       body: FutureBuilder<BaziChart>(
@@ -80,7 +101,7 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                     Center(
                       child: Text(
                         "ผลการทำนาย",
-                        style: Theme.of(context).textTheme.headlineMediumRed,
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -94,12 +115,12 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                               Icon(
                                 widget.gender == 0 ? Icons.male : Icons.female,
                                 size: 40,
-                                color: Theme.of(context).primaryColor,
+                                color: Colors.black,
                               ),
                               const SizedBox(width: 5),
                               Text(
                                 _shortenName(widget.name),
-                                style: Theme.of(context).textTheme.bodyLargeRed,
+                                style: Theme.of(context).textTheme.bodyLarge,
                                 softWrap: true,
                               ),
                             ],
@@ -163,13 +184,15 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                               const SizedBox(width: 8), 
                               Text(
                                 "ลักษณะนิสัย",
-                                style: Theme.of(context).textTheme.headlineSmallW,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmallW,
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            HoraRepository().getBaseHora(element)[element]["pros"],
+                            HoraRepository().getBaseHora(element)[element]
+                                ["pros"],
                             style: const TextStyle(color: wColor),
                           ),
                           const SizedBox(height: 20),
@@ -179,16 +202,18 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                                 Icons.thumb_down,
                                 color: wColor,
                               ),
-                              const SizedBox(width: 8), 
+                              const SizedBox(width: 8),
                               Text(
                                 "ข้อเสีย",
-                                style: Theme.of(context).textTheme.headlineSmallW,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmallW,
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            HoraRepository().getBaseHora(element)[element]["cons"],
+                            HoraRepository().getBaseHora(element)[element]
+                                ["cons"],
                             style: const TextStyle(color: wColor),
                           ),
                           const SizedBox(height: 20),
@@ -198,10 +223,11 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                                 Icons.badge,
                                 color: wColor,
                               ),
-                              const SizedBox(width: 8), 
+                              const SizedBox(width: 8),
                               Text(
                                 "อาชีพที่เหมาะสม",
-                                style: Theme.of(context).textTheme.headlineSmallW,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmallW,
                               ),
                             ],
                           ),
@@ -243,7 +269,7 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
     );
   }
 }
-  
+
 String _shortenName(String name, {int maxLength = 25}) {
   if (name.length <= maxLength) {
     return name;
