@@ -117,12 +117,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ],
               ),
               const SizedBox(height: 30),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "คะแนนประจำวันของคุณ",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
+              Row(
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      text: 'คะแนนประจำวันของคุณ',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                      children: [
+                        TextSpan(
+                          text: ' (คะแนน/เวลา)',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
               Center(

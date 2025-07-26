@@ -14,7 +14,7 @@ class TodayHoraChart extends StatelessWidget {
     double minBottom = h.map((e) => e[1].toDouble()).cast<double>().reduce(min);
     double interval = 2;
     double barWidth = 25;
-    double totalWidth = (barWidth + 30) * h.length;
+    double totalWidth = (barWidth + 25) * h.length;
 
     List<int> yLabels = [];
     for (int v = (minBottom).floor(); v <= maxTop.ceil(); v++) {
