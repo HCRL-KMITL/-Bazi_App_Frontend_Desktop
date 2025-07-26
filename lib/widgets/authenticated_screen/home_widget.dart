@@ -176,7 +176,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ),
                 ],
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Text("สีประจำวัน ",
@@ -194,7 +194,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         .toList()),
                 ],
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
               ForecastTabs(todayHora: todayHora)
             ],
           ),

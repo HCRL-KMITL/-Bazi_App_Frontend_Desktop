@@ -73,7 +73,7 @@ class _ForecastTabsState extends State<ForecastTabs>
                   margin: const EdgeInsets.only(right: 8),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: selected ? Theme.of(context).primaryColor : wColor,
+                    color: selected ? Theme.of(context).primaryColor : const Color.fromARGB(255, 243, 197, 203),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10),
@@ -87,7 +87,7 @@ class _ForecastTabsState extends State<ForecastTabs>
                   child: Text(
                     tabTitles[index],
                     style: TextStyle(
-                      color: selected ? wColor : Colors.black,
+                      color: selected ? wColor : Colors.grey.shade800,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -97,29 +97,40 @@ class _ForecastTabsState extends State<ForecastTabs>
           ),
         ),
         SizedBox(
-          height: 190,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.only(
-                topLeft: currentIndex == 0 ? Radius.zero : const Radius.circular(10),
-                topRight: currentIndex == 3 ? Radius.zero : const Radius.circular(10),
-                bottomLeft: const Radius.circular(10),
-                bottomRight: const Radius.circular(10),
+          height: 205,
+          child: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 244, 174, 174),
+                  borderRadius: BorderRadius.zero,
+                ),
               ),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                buildPredictionTab("health"),
-                buildPredictionTab("love"),
-                buildPredictionTab("money"),
-                buildPredictionTab("work"),
-              ],
-            ),
-          ),
+
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: currentIndex == 0 ? Radius.zero : const Radius.circular(10),
+                    topRight: currentIndex == 3 ? Radius.zero : const Radius.circular(10),
+                    bottomLeft: const Radius.circular(10),
+                    bottomRight: const Radius.circular(10),
+                  ),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    buildPredictionTab("health"),
+                    buildPredictionTab("love"),
+                    buildPredictionTab("money"),
+                    buildPredictionTab("work"),
+                  ],
+                ),
+              ),
+            ],
+          )
         ),
       ],
     );
