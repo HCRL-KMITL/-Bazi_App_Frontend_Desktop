@@ -171,51 +171,44 @@ class TodayHoraChart extends StatelessWidget {
       double topValue = h[index][0].toDouble();
       double bottomValue = h[index][1].toDouble();
 
-      List<BarChartRodData> rods = [];
+      List<BarChartRodStackItem> stackItems = [];
 
       if (bottomValue < 0) {
-        rods.add(
-          BarChartRodData(
-            fromY: bottomValue,
-            toY: 0,
-            width: barWidth,
-            rodStackItems: generateStackItemsWithGradient(
-              bottomValue,
-              0,
-              const Color(0xFF862D2D),
-              const Color(0xFFcbbcbc),
-            ),
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
+        stackItems.addAll(
+          generateStackItemsWithGradient(
+            bottomValue,
+            0,
+            const Color(0xFF862D2D),
+            const Color(0xFFcbbcbc),
           ),
         );
       }
 
       if (topValue > 0) {
-        rods.add(
-          BarChartRodData(
-            fromY: 0,
-            toY: topValue,
-            width: barWidth,
-            rodStackItems: generateStackItemsWithGradient(
-              0,
-              topValue,
-              const Color(0xFFbec6c1),
-              const Color(0xFF316141),
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
+        stackItems.addAll(
+          generateStackItemsWithGradient(
+            0,
+            topValue,
+            const Color(0xFFbec6c1),
+            const Color(0xFF316141),
           ),
         );
       }
 
       return BarChartGroupData(
         x: index,
-        barRods: rods,
+        barRods: [
+          BarChartRodData(
+            fromY: bottomValue < 0 ? bottomValue : 0,
+            toY: topValue > 0 ? topValue : 0,
+            width: barWidth,
+            rodStackItems: stackItems,
+            borderRadius: BorderRadius.vertical(
+              top: topValue > 0 ? const Radius.circular(10) : Radius.zero,
+              bottom: bottomValue < 0 ? const Radius.circular(10) : Radius.zero,
+            ),
+          )
+        ],
       );
     });
   }
