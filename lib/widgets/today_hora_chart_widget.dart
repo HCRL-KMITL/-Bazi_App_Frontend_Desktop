@@ -25,7 +25,7 @@ class TodayHoraChart extends StatelessWidget {
     yLabels = yLabels.reversed.toList();
 
     return Padding(
-      padding: const EdgeInsetsGeometry.directional(start: 5, end: 5, top: 16, bottom: 10),
+      padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 16, 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
           children: [

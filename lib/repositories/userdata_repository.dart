@@ -42,7 +42,7 @@ class UserDataRepository {
       "gender": gender,
     };
     print("PUT Request: $request");
-    await http.put(
+    final sth = await http.put(
       Uri.parse('$apiUrl/users/'),
       headers: {
         "Authorization": "$tk",
@@ -50,6 +50,10 @@ class UserDataRepository {
       },
       body: jsonEncode(request),
     );
+    if (sth.statusCode != 200) {
+      FirebaseAuth.instance.signOut();
+      throw Exception(sth.body);
+    }
     //print("Code: ${response.statusCode}, Body: ${response.body}");
   }
 

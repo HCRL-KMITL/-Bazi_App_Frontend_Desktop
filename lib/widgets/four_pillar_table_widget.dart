@@ -34,7 +34,7 @@ class FourPillarTable extends StatelessWidget {
               children: [
                 TableCell(
                   child: Padding (
-                  padding: const EdgeInsetsGeometry.fromLTRB(15, 0, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: pillarCell(chart.hourPillar.heavenlyStem),
                   ),),
                 TableCell(
@@ -45,7 +45,7 @@ class FourPillarTable extends StatelessWidget {
                 ),
                 TableCell(
                   child: Padding (
-                  padding: const EdgeInsetsGeometry.fromLTRB(0, 0, 15, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
                     child: pillarCell(chart.yearPillar.heavenlyStem),
                   ),),
               ],
@@ -62,7 +62,7 @@ class FourPillarTable extends StatelessWidget {
               children: [
                 TableCell(
                   child: Padding (
-                  padding: const EdgeInsetsGeometry.fromLTRB(15, 0, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: pillarCell(chart.hourPillar.earthlyBranch),
                   ),),
                 TableCell(
@@ -73,7 +73,7 @@ class FourPillarTable extends StatelessWidget {
                 ),
                 TableCell(
                   child: Padding (
-                  padding: const EdgeInsetsGeometry.fromLTRB(0, 0, 15, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
                     child: pillarCell(chart.yearPillar.earthlyBranch),
                   ),),
               ],
