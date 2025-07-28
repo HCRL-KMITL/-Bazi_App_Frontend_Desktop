@@ -18,6 +18,8 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final int month = widget.selectedMonth + 1;
+
     return FutureBuilder<Map<String, dynamic>>(
       future: HoraRepository().getCalendarData(widget.selectedMonth + 1),
       builder: (context, snapshot) {
@@ -31,23 +33,22 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
           } else {
             return Expanded(
               child: TableCalendar(
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: fcolor,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                daysOfWeekHeight: 40,
-                locale: 'th_TH',
-                focusedDay: DateTime(currentYear, widget.selectedMonth + 1, 1),
-                firstDay: DateTime.utc(
-                    DateTime.now().year, widget.selectedMonth + 1, 1),
-                lastDay: DateTime.utc(
-                    DateTime.now().year, widget.selectedMonth + 1, 31),
-                availableGestures: AvailableGestures.none,
-                headerVisible: false,
-                calendarFormat: CalendarFormat.month,
                 calendarBuilders: CalendarBuilders(
+                  todayBuilder: (context, day, focusedDay) {
+                    return Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: fcolor,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  },
                   defaultBuilder: (context, day, focusedDay) {
                     final isGood = snapshot.data!["goodDate"].contains(day.day);
                     final isBad = snapshot.data!["badDate"].contains(day.day);
@@ -71,8 +72,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                       decoration = BoxDecoration(
                         color: Colors.transparent,
                         shape: BoxShape.circle,
-                        border:
-                            Border.all(color: const Color(0xFF862D2D), width: 1.5),
+                        border: Border.all(color: const Color(0xFF862D2D), width: 1.5),
                       );
                       textColor = Colors.black;
                     }
@@ -84,14 +84,35 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                       child: Center(
                         child: Text(
                           day.day.toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: textColor),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
                         ),
                       ),
                     );
                   },
+                  outsideBuilder: (context, day, focusedDay) {
+                    return Container(
+                      width: 38,
+                      height: 38,
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
+                      ),
+                    );
+                  },
+                ),
+                daysOfWeekHeight: 40,
+                locale: 'th_TH',
+                focusedDay: DateTime(currentYear, month, 1),
+                firstDay: DateTime(currentYear, month - 1, 25),
+                lastDay: DateTime(currentYear, month + 1, 7), 
+                availableGestures: AvailableGestures.none,
+                headerVisible: false,
+                calendarFormat: CalendarFormat.month,
+                calendarStyle: const CalendarStyle(
+                  outsideDaysVisible: true,
                 ),
               ),
             );
