@@ -31,7 +31,7 @@ class TodayHoraChart extends StatelessWidget {
           children: [
             SizedBox(
               width: 40,
-              height: 125,
+              height: 160,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: yLabels.map((v) {
@@ -45,8 +45,8 @@ class TodayHoraChart extends StatelessWidget {
             ),
 
           Expanded(
-            child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            // child: SingleChildScrollView(
+            // scrollDirection: Axis.horizontal,
             child: SizedBox(
               width: totalWidth,
               height: 190,
@@ -140,7 +140,7 @@ class TodayHoraChart extends StatelessWidget {
                   ),
                 ),
               )
-            )
+            // )
           )
         ]
       )

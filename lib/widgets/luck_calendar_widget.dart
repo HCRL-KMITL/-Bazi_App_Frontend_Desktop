@@ -34,65 +34,64 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
             return Expanded(
               child: TableCalendar(
                 calendarBuilders: CalendarBuilders(
-                  todayBuilder: (context, day, focusedDay) {
-                    return Container(
-                      width: 38,
-                      height: 38,
+                  defaultBuilder: (context, day, focusedDay) {
+                    final isToday = day.year == DateTime.now().year &&
+                                    day.month == DateTime.now().month &&
+                                    day.day == DateTime.now().day;
+
+                    final isGood = snapshot.data!["goodDate"].contains(day.day);
+                    final isBad = snapshot.data!["badDate"].contains(day.day);
+
+                    // print("badDate: ${snapshot.data!["badDate"]}");
+                    // print("Type: ${snapshot.data!["badDate"].runtimeType}");
+
+
+                    final Color bgColor;
+                    final Color textColor;
+
+                    if (isGood) {
+                      bgColor = const Color(0xFF316141);
+                      textColor = Colors.white;
+                    } else if (isBad) {
+                      bgColor = Theme.of(context).primaryColor;
+                      textColor = Colors.white;
+                    } else {
+                      bgColor = Colors.transparent;
+                      textColor = Colors.black;
+                    }
+
+                    Widget dayWidget = Container(
+                      width: 45,
+                      height: 45,
                       decoration: BoxDecoration(
-                        color: fcolor,
+                        color: bgColor,
                         shape: BoxShape.circle,
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         day.day.toString(),
-                        style: const TextStyle(color: Colors.white),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
                       ),
                     );
-                  },
-                  defaultBuilder: (context, day, focusedDay) {
-                    final isGood = snapshot.data!["goodDate"].contains(day.day);
-                    final isBad = snapshot.data!["badDate"].contains(day.day);
 
-                    final BoxDecoration decoration;
-                    final Color textColor;
-
-                    if (isGood) {
-                      decoration = const BoxDecoration(
-                        color: Color(0xFF316141),
-                        shape: BoxShape.circle,
-                      );
-                      textColor = Colors.white;
-                    } else if (isBad) {
-                      decoration = BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        shape: BoxShape.circle,
-                      );
-                      textColor = Colors.white;
-                    } else {
-                      decoration = BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFF862D2D), width: 1.5),
-                      );
-                      textColor = Colors.black;
-                    }
-
-                    return Container(
-                      width: 38,
-                      height: 38,
-                      decoration: decoration,
-                      child: Center(
-                        child: Text(
-                          day.day.toString(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
+                    if (isToday) {
+                      dayWidget = Container(
+                        width: 51,
+                        height: 51,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: fcolor, width: 2),
                         ),
-                      ),
-                    );
+                        alignment: Alignment.center,
+                        child: dayWidget,
+                      );
+                    }
+                    return dayWidget;
                   },
                   outsideBuilder: (context, day, focusedDay) {
                     return Container(
-                      width: 38,
-                      height: 38,
+                      width: 45,
+                      height: 45,
                       alignment: Alignment.center,
                       child: Text(
                         day.day.toString(),
@@ -112,6 +111,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                 headerVisible: false,
                 calendarFormat: CalendarFormat.month,
                 calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(),
                   outsideDaysVisible: true,
                 ),
               ),

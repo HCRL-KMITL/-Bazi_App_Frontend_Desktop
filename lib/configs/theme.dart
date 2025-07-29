@@ -22,37 +22,38 @@ final ThemeData appTheme = ThemeData(
   ),
   fontFamily: GoogleFonts.kanit().fontFamily,
   textTheme: TextTheme(
+    // 24->14
     headlineLarge: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: FontWeight.bold,
       ),
     ),
     headlineMedium: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 22,
+        fontSize: 26,
         fontWeight: FontWeight.bold,
       ),
     ),
     headlineSmall: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: FontWeight.bold,
       ),
     ),
     bodyLarge: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 18,
+        fontSize: 22,
       ),
     ),
     bodyMedium: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 16,
+        fontSize: 21,
       ),
     ),
     bodySmall: GoogleFonts.kanit(
       textStyle: const TextStyle(
-        fontSize: 14,
+        fontSize: 19,
       ),
     ),
   ),
@@ -79,6 +80,13 @@ extension CustomTextTheme on TextTheme {
       textStyle: const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
+        color: wColor,
+      ),
+    );
+
+    TextStyle get bodyMediumWcolor => GoogleFonts.kanit(
+      textStyle: const TextStyle(
+        fontSize: 21,
         color: wColor,
       ),
     );

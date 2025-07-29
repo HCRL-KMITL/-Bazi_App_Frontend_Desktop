@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/grommet_icons.dart';
 import 'package:intl/intl.dart';
-
 import '../configs/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -44,7 +45,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     'BAZI',
                     style: TextStyle(
                       fontFamily: 'CinzelDecorative',
-                      fontSize: 70,
+                      fontSize: 150,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
                       letterSpacing: 7.0,
@@ -58,14 +59,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                 Padding(
-                  padding: EdgeInsets.only(right: screenWidth * 0.15),
+                  padding: EdgeInsets.only(right: screenWidth * 0.33),
                   child: const Align(
                     alignment: Alignment.centerRight,
                     child: Text(
                       'APP',
                       style: TextStyle(
                         fontFamily: 'CinzelDecorative',
-                        fontSize: 40,
+                        fontSize: 100,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
                         shadows: [
@@ -88,19 +89,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     AuthenticationRepository().signInWithGoogle();
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: 60,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10), color: wColor),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Iconify(GrommetIcons.google),
+                        // const Iconify(GrommetIcons.google),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text("ลงชื่อเข้าใช้ด้วย Google",
-                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          "เริ่มดูดวงกันเลย!",
+                          style: GoogleFonts.kanit(
+                            textStyle: const TextStyle(
+                              fontSize: 30,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -288,17 +295,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           },
                         );
                       }),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10), color: wColor),
-                    child: Center(
-                        child: Text(
-                      "ผู้เยี่ยมชม",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )),
-                  ),
+                  child: const SizedBox(height: 40,),
                 )
               ],
             ),
