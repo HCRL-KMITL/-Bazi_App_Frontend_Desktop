@@ -42,14 +42,10 @@ class _MemberScreenState extends State<MemberScreen> {
               flex: 1,
               child: HomeWidget(userData: userData!),
             ),
-            const Expanded(
-              flex: 1,
-              child: CalendarWidget(),
-            ),
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsetsGeometry.only(top: 100),
+                padding: const EdgeInsetsGeometry.only(top: 150),
                 child: GuestHoraScreen(
                   name: userData!.name,
                   birthDate: userData!.birthDate.split(" ")[0],
@@ -58,15 +54,15 @@ class _MemberScreenState extends State<MemberScreen> {
                 ),
               )
             ),
-            // Expanded(flex: 1,child: ProfileWidget(userData: userData!,))
+            const Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(top: 25),
+                child: CalendarWidget(),
+              )
+            ),
           ],
         )
-        
-        
-        
-        
-        
-        
       )
     : loadingWidget(),
     );

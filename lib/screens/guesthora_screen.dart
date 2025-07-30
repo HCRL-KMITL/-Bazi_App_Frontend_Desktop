@@ -96,24 +96,6 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                    IconButton(
-                      iconSize: 30,
-                      color: wColor,
-                      style: ButtonStyle(
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                          backgroundColor: WidgetStatePropertyAll(
-                              Theme.of(context).primaryColor)),
-                      onPressed: () async {
-                        await AuthenticationRepository().signOut();
-                      },
-                      icon: const Icon(Icons.logout)
-                    ),
-                  ]
-                ),
                 FlipCard(
                     direction: FlipDirection.HORIZONTAL,
                     front: Column(
@@ -147,6 +129,9 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                             ],
                           ),
                         ),
+                        const SizedBox(height: 10,),
+                        Text("แตะเพื่อดูผลเพิ่มเติม",
+                          style: Theme.of(context).textTheme.bodySmall)
                       ],
                     ),
 
@@ -212,6 +197,9 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: 10,),
+                          Text("แตะเพื่อดูตารางธาตุ",
+                            style: Theme.of(context).textTheme.bodySmall)
                         ],
                       )
                     ),

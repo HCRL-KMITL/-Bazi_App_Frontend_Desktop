@@ -90,7 +90,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "สวัสดี! ประจำวันที่ ${formatThaiDate(DateTime.now())}",
+                        formatThaiDate(DateTime.now()),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        "สวัสดี! คุณ ${widget.userData.name}",
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyLarge,
