@@ -13,15 +13,51 @@ class LuckCalendarWidget extends StatefulWidget {
   State<LuckCalendarWidget> createState() => _LuckCalendarWidgetState();
 }
 
+Map<String, Color> getDayColors(BuildContext context, DateTime day, Map<String, dynamic> data) {
+  final int d = day.day;
+  if (data["goodDate"]!.contains(d)) {
+    return {
+      "bg": const Color(0xFF316141),
+      "text": Colors.white,
+    };
+  } else if (data["badDate"]!.contains(d)) {
+    return {
+      "bg": Theme.of(context).primaryColor,
+      "text": Colors.white,
+    };
+  } else {
+    return {
+      "bg": wColor,
+      "text": Colors.black,
+    };
+  }
+}
+
 class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
   int currentYear = DateTime.now().year;
+  late Future<Map<String, dynamic>> _calendarFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarFuture = HoraRepository().getCalendarData(widget.selectedMonth + 1);
+  }
+
+  @override
+  void didUpdateWidget(covariant LuckCalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedMonth != widget.selectedMonth) {
+      // โหลดข้อมูลใหม่เฉพาะตอนเดือนเปลี่ยน
+      _calendarFuture = HoraRepository().getCalendarData(widget.selectedMonth + 1);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final int month = widget.selectedMonth + 1;
 
     return FutureBuilder<Map<String, dynamic>>(
-      future: HoraRepository().getCalendarData(widget.selectedMonth + 1),
+      future: _calendarFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: loadingWidget());
@@ -31,65 +67,73 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
               child: Text("เกิดข้อผิดพลาดในการดึงข้อมูล"),
             );
           } else {
-            return Expanded(
-              child: TableCalendar(
-                calendarBuilders: CalendarBuilders(
-                  defaultBuilder: (context, day, focusedDay) {
-                    final isToday = day.year == DateTime.now().year &&
-                                    day.month == DateTime.now().month &&
-                                    day.day == DateTime.now().day;
+            return TableCalendar(
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  final dayColors = getDayColors(context, day, snapshot.data!);
+                  final bgColor = dayColors["bg"]!;
+                  final textColor = dayColors["text"]!;
+                  final bool isGood = snapshot.data!["goodDate"].contains(day.day);
+                  final bool isBad = snapshot.data!["badDate"].contains(day.day);
 
-                    final isGood = snapshot.data!["goodDate"].contains(day.day);
-                    final isBad = snapshot.data!["badDate"].contains(day.day);
+                  final decoration = bgColor == Colors.transparent
+                      ? BoxDecoration(
+                          color: bgColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color(0xFF862D2D), width: 2.5),
+                        )
+                      : BoxDecoration(
+                          color: bgColor,
+                          shape: BoxShape.circle,
+                        );
 
-                    // print("badDate: ${snapshot.data!["badDate"]}");
-                    // print("Type: ${snapshot.data!["badDate"].runtimeType}");
-
-
-                    final Color bgColor;
-                    final Color textColor;
-
-                    if (isGood) {
-                      bgColor = const Color(0xFF316141);
-                      textColor = Colors.white;
-                    } else if (isBad) {
-                      bgColor = Theme.of(context).primaryColor;
-                      textColor = Colors.white;
-                    } else {
-                      bgColor = Colors.transparent;
-                      textColor = Colors.black;
-                    }
-
-                    Widget dayWidget = Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: bgColor,
-                        shape: BoxShape.circle,
-                      ),
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: decoration,
                       alignment: Alignment.center,
                       child: Text(
                         day.day.toString(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
                       ),
-                    );
+                    )
+                  );
+                },
+                todayBuilder: (context, day, focusedDay) {
+                  final dayColors = getDayColors(context, day, snapshot.data!);
+                  final bgColor = dayColors["bg"]!;
+                  final textColor = dayColors["text"]!;
 
-                    if (isToday) {
-                      dayWidget = Container(
-                        width: 51,
-                        height: 51,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: fcolor, width: 2),
-                        ),
-                        alignment: Alignment.center,
-                        child: dayWidget,
-                      );
-                    }
-                    return dayWidget;
-                  },
-                  outsideBuilder: (context, day, focusedDay) {
-                    return Container(
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black,
+                            spreadRadius: 3,
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: TextStyle(color: textColor),
+                      ),
+                    )
+                  );
+                },
+                outsideBuilder: (context, day, focusedDay) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Container(
                       width: 45,
                       height: 45,
                       alignment: Alignment.center,
@@ -99,21 +143,21 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                               color: Colors.grey,
                             ),
                       ),
-                    );
-                  },
-                ),
-                daysOfWeekHeight: 40,
-                locale: 'th_TH',
-                focusedDay: DateTime(currentYear, month, 1),
-                firstDay: DateTime(currentYear, month - 1, 25),
-                lastDay: DateTime(currentYear, month + 1, 7), 
-                availableGestures: AvailableGestures.none,
-                headerVisible: false,
-                calendarFormat: CalendarFormat.month,
-                calendarStyle: const CalendarStyle(
-                  todayDecoration: BoxDecoration(),
-                  outsideDaysVisible: true,
-                ),
+                    )
+                  );
+                },
+              ),
+              daysOfWeekHeight: 40,
+              locale: 'th_TH',
+              focusedDay: DateTime(currentYear, month, 1),
+              firstDay: DateTime(currentYear, month - 1, 25),
+              lastDay: DateTime(currentYear, month + 1, 7),
+              availableGestures: AvailableGestures.none,
+              headerVisible: false,
+              calendarFormat: CalendarFormat.month,
+              calendarStyle: const CalendarStyle(
+                todayDecoration: BoxDecoration(),
+                outsideDaysVisible: true,
               ),
             );
           }

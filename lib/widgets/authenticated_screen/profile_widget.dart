@@ -39,7 +39,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 Container(
                   height: 250,
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/profile_background.png'),
                       fit: BoxFit.cover,
@@ -212,7 +212,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               gender: widget.userData.gender,
                             ),
                             settings:
-                                RouteSettings(arguments: {'from': 'member'}),
+                                const RouteSettings(arguments: {'from': 'member'}),
                           ),
                         );
                       },
@@ -220,7 +220,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9),
                         ),

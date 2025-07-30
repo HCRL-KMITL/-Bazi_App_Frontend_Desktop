@@ -1,5 +1,6 @@
 import 'package:bazi_app_frontend/configs/theme.dart';
 import 'package:bazi_app_frontend/models/bazichart_model.dart';
+import 'package:bazi_app_frontend/repositories/authentication_repository.dart';
 import 'package:bazi_app_frontend/repositories/fourpillars_repository.dart';
 import 'package:bazi_app_frontend/repositories/hora_repository.dart';
 import 'package:bazi_app_frontend/repositories/misc_repository.dart';
@@ -7,6 +8,7 @@ import 'package:bazi_app_frontend/screens/member_screen.dart';
 import 'package:bazi_app_frontend/screens/welcome_screen.dart';
 import 'package:bazi_app_frontend/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flip_card/flip_card.dart';
 
 class GuestHoraScreen extends StatefulWidget {
   const GuestHoraScreen(
@@ -45,30 +47,30 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: wColor,
-        elevation: 15,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            if (args?['from'] == 'member') {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MemberScreen(),
-                  ));
-            } else {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WelcomeScreen(),
-                  ));
-            }
-          },
-        ),
-        title: const Text("Bazi Chart"),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).primaryColor,
+      //   foregroundColor: wColor,
+      //   elevation: 15,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back, color: Colors.white),
+      //     onPressed: () {
+      //       if (args?['from'] == 'member') {
+      //         Navigator.pushReplacement(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const MemberScreen(),
+      //             ));
+      //       } else {
+      //         Navigator.pushReplacement(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const WelcomeScreen(),
+      //             ));
+      //       }
+      //     },
+      //   ),
+      //   title: const Text("Bazi Chart"),
+      // ),
       body: FutureBuilder<BaziChart>(
         future: futureBaziChart,
         builder: (context, snapshot) {
@@ -91,158 +93,131 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
             BaziChart baziChart = snapshot.data!;
             String element = baziChart.dayPillar.heavenlyStem.name;
 
-            return PageView(
-                controller: _pageController,
-                physics: const PageScrollPhysics(),
-                children: [
-                  // หน้าแรก
-                  Stack(
-                    children: [
-                      Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Center(
-                            child: Text("ผลการทำนาย",
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Spacer(),
+                    IconButton(
+                      iconSize: 30,
+                      color: wColor,
+                      style: ButtonStyle(
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                          backgroundColor: WidgetStatePropertyAll(
+                              Theme.of(context).primaryColor)),
+                      onPressed: () async {
+                        await AuthenticationRepository().signOut();
+                      },
+                      icon: const Icon(Icons.logout)
+                    ),
+                  ]
+                ),
+                FlipCard(
+                    direction: FlipDirection.HORIZONTAL,
+                    front: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Text("ผลการทำนาย",
+                              style: Theme.of(context).textTheme.headlineMedium),
+                        ),
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.67,
+                          child: Stack(
                             children: [
-                              Icon(
-                                  widget.gender == 0
-                                      ? Icons.male
-                                      : Icons.female,
-                                  size: 25,
-                                  color: Theme.of(context).primaryColor),
-                              const SizedBox(width: 5),
-                              Text(_shortenName(widget.name),
-                                  style:
-                                      Theme.of(context).textTheme.bodyLargeRed),
+                              Positioned.fill(
+                                child: Image.asset(
+                                  'assets/images/new_fream.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Center(
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 130),
+                                    personalElementText(context, element),
+                                    FourPillarTable(chart: baziChart),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                        ),
+                      ],
+                    ),
+
+                    back: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 25),
+                          Center(
+                            child: Text("ผลการทำนาย",
+                                style: Theme.of(context).textTheme.headlineMedium),
+                          ),
+                          const SizedBox(height: 15),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.7,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.67,
                             child: Stack(
                               children: [
                                 Positioned.fill(
-                                  child: Image.asset('assets/images/fream.png',
-                                      fit: BoxFit.cover),
+                                  child: Image.asset(
+                                    'assets/images/new_fream.png',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                                 Center(
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(height: 130),
-                                      personalElementText(context, element),
-                                      FourPillarTable(chart: baziChart),
-                                    ],
+                                  child: Padding(
+                                    padding: const EdgeInsetsGeometry.only(left: 30, right: 30, top: 100),
+                                    child: Column(
+                                      // crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Text("คำทำนาย",
+                                        //     style: Theme.of(context).textTheme.headlineMedium),
+                                        // Text(
+                                        //     "${MiscRepository().displayThaiDate(widget.birthDate)} ${widget.birthTime.substring(0, 5)} น.",
+                                        //     style: Theme.of(context).textTheme.bodyLargeRed),
+                                        const SizedBox(height: 20),
+                                        _buildPredictionBlock(
+                                          context,
+                                          icon: Icons.accessibility,
+                                          title: "ลักษณะนิสัย",
+                                          text: HoraRepository()
+                                              .getBaseHora(element)[element]["pros"],
+                                        ),
+                                        const SizedBox(height: 20),
+                                        _buildPredictionBlock(
+                                          context,
+                                          icon: Icons.thumb_down,
+                                          title: "ข้อเสีย",
+                                          text: HoraRepository()
+                                              .getBaseHora(element)[element]["cons"],
+                                        ),
+                                        const SizedBox(height: 20),
+                                        _buildPredictionBlock(
+                                          context,
+                                          icon: Icons.badge,
+                                          title: "อาชีพที่เหมาะสม",
+                                          text: HoraRepository()
+                                              .getBaseHora(element)["occupation"],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ],
-                      ),
-                      // ปุ่มขวาล่าง
-                      Positioned(
-                        bottom: 20,
-                        right: 20,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('เลื่อนเพื่อดูคำอธิบายแบบยาว',
-                                style: Theme.of(context).textTheme.labelLarge),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () => _pageController.nextPage(
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOut,
-                              ),
-                              child: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                radius: 25,
-                                child: const Icon(Icons.arrow_forward,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // หน้าที่สอง
-                  Stack(
-                    children: [
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.all(25),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("คำทำนาย",
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium),
-                            Text(
-                                "${MiscRepository().displayThaiDate(widget.birthDate)} ${widget.birthTime.substring(0, 5)} น.",
-                                style:
-                                    Theme.of(context).textTheme.bodyLargeRed),
-                            const SizedBox(height: 20),
-                            _buildPredictionBlock(
-                              context,
-                              icon: Icons.accessibility,
-                              title: "ลักษณะนิสัย",
-                              text: HoraRepository()
-                                  .getBaseHora(element)[element]["pros"],
-                            ),
-                            const SizedBox(height: 20),
-                            _buildPredictionBlock(
-                              context,
-                              icon: Icons.thumb_down,
-                              title: "ข้อเสีย",
-                              text: HoraRepository()
-                                  .getBaseHora(element)[element]["cons"],
-                            ),
-                            const SizedBox(height: 20),
-                            _buildPredictionBlock(
-                              context,
-                              icon: Icons.badge,
-                              title: "อาชีพที่เหมาะสม",
-                              text: HoraRepository()
-                                  .getBaseHora(element)["occupation"],
-                            ),
-                          ],
-                        ),
-                      ),
-                      // ปุ่มซ้ายล่าง
-                      Positioned(
-                        bottom: 20,
-                        left: 20,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () => _pageController.previousPage(
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.easeInOut),
-                              child: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                radius: 25,
-                                child: const Icon(Icons.arrow_back,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text('เลื่อนเพื่อดูตาราง',
-                                style: Theme.of(context).textTheme.labelLarge),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ]);
+                      )
+                    ),
+                )
+              ]
+            );
           }
         },
       ),
@@ -252,22 +227,26 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
 
 Widget _buildPredictionBlock(BuildContext context,
     {required IconData icon, required String title, required String text}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Icon(icon, color: Theme.of(context).primaryColor),
-          const SizedBox(width: 8),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Text(text, style: Theme.of(context).textTheme.bodyMedium),
-    ],
+  return Container(
+    // ignore: deprecated_member_use
+    color: wColor.withOpacity(0.8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: Theme.of(context).primaryColor),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text(text, style: Theme.of(context).textTheme.bodyMedium),
+      ],
+    ),
   );
 }
 

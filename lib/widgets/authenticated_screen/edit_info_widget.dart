@@ -65,7 +65,7 @@ class _EditInfoWidgetState extends State<EditInfoWidget> {
                 Container(
                   height: 200,
                   margin: const EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/welcome_pic.png'),
                     ),

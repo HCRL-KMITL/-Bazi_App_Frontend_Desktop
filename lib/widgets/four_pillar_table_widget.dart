@@ -190,7 +190,7 @@ Widget pillarCell(
         Text(
           getElementName(branch.name),
           style: GoogleFonts.kanit(
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 13,
               color: wColor,
             ),

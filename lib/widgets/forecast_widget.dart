@@ -68,7 +68,7 @@ class _ForecastTabsState extends State<ForecastTabs>
                   });
                 },
                 child: Container(
-                  width: 100,
+                  width: 137.5,
                   height: 40,
                   margin: const EdgeInsets.only(right: 8),
                   alignment: Alignment.center,
@@ -112,7 +112,7 @@ class _ForecastTabsState extends State<ForecastTabs>
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.only(
                     topLeft: currentIndex == 0 ? Radius.zero : const Radius.circular(10),
-                    topRight: const Radius.circular(10),
+                    topRight: currentIndex == 3 ? Radius.zero : const Radius.circular(10),
                     bottomLeft: const Radius.circular(10),
                     bottomRight: const Radius.circular(10),
                   ),
