@@ -1,15 +1,15 @@
 import 'dart:math';
-
 import 'package:bazi_app_frontend/configs/theme.dart';
 import 'package:bazi_app_frontend/constants/constants.dart';
 import 'package:bazi_app_frontend/models/user_model.dart';
 import 'package:bazi_app_frontend/repositories/authentication_repository.dart';
 import 'package:bazi_app_frontend/repositories/hora_repository.dart';
+import 'package:bazi_app_frontend/widgets/TodayHoraSection.dart';
 import 'package:bazi_app_frontend/widgets/monthly_prediction_widget.dart';
 import 'package:bazi_app_frontend/widgets/today_hora_chart_widget.dart';
 import 'package:bazi_app_frontend/widgets/forecast_widget.dart';
 import 'package:bazi_app_frontend/widgets/luck_calendar_widget.dart';
-
+import 'package:bazi_app_frontend/widgets/authenticated_screen/edit_info_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/uiw.dart';
@@ -55,7 +55,6 @@ class _HomeWidgetState extends State<HomeWidget> {
         bestTimeIndex.add(yam[i + 1]);
       }
     }
-    print("Today Hora: $horaToday");
     if (!mounted) return;
     setState(() {
       todayHora = horaToday;
@@ -70,129 +69,79 @@ class _HomeWidgetState extends State<HomeWidget> {
     return '$dayMonth $thaiYear';
   }
 
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  todayHora.isEmpty
-                      ? dayStatusIcon["Neutral"]!
-                      : dayStatusIcon[todayHora["status"]]!,
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        formatThaiDate(DateTime.now()),
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      Text(
-                        "สวัสดี! คุณ ${widget.userData.name}",
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              Row(
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      text: 'คะแนนประจำวันของคุณ',
-                      style: Theme.of(context).textTheme.headlineSmall,
+    return Padding(
+      padding: const EdgeInsets.all(25.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                todayHora.isEmpty
+                    ? dayStatusIcon["Neutral"]!
+                    : dayStatusIcon[todayHora["status"]]!,
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Text(
+                    //   formatThaiDate(DateTime.now()),
+                    //   style: Theme.of(context).textTheme.bodySmall,
+                    // ),
+                    Row(
                       children: [
-                        TextSpan(
-                          text: ' (คะแนน/เวลา)',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                        Text(
+                          "สวัสดี! คุณ ${widget.userData.name}",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        Positioned(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditInfoScreen(oldData: widget.userData),
+                                ),
+                              );
+                            },
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.edit, color: Colors.black, size: 18),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).disabledColor,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Theme.of(context).primaryColor, width: 2)
-                  ),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 200,
-                  child: todayHora.isEmpty
-                      ? const Center(child: Text("กำลังโหลด..."))
-                      : TodayHoraChart(h: todayHora["hours"]),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "ช่วงเวลาที่ดีที่สุดสำหรับคุณในวันนี้คือ",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 10),
-                  GridView.count(
-                    crossAxisCount: 4,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 10,
-                    shrinkWrap: true, //เนื้อหาไม่เกินกรอบ
-                    childAspectRatio: 2.5,
-                    physics: const NeverScrollableScrollPhysics(), //ป้องกันการ column ทับกัน
-                    children: bestTime.map((time) {
-                      return Container(
-                        padding: const EdgeInsets.all(0),
-                        decoration: BoxDecoration(
-                          color: fcolor,
-                          borderRadius: BorderRadius.circular(10),
+              ],
+            ),
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                Text("สีประจำวัน ",
+                    style: Theme.of(context).textTheme.headlineSmall),
+                if (todayHora.containsKey("colors"))
+                  ...((todayHora["colors"] as List)
+                      .map(
+                        (colorName) => Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: colorDisplaying[colorName] ??
+                              const SizedBox(),
                         ),
-                        child: Center(
-                          child: Text(
-                            time!,
-                            style: Theme.of(context).textTheme.bodyMediumWcolor,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              Row(
-                children: [
-                  Text("สีประจำวัน ",
-                      style: Theme.of(context).textTheme.headlineSmall),
-                  if (todayHora.containsKey("colors"))
-                    ...((todayHora["colors"] as List)
-                        .map(
-                          (colorName) => Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4.0), // Adjust spacing
-                            child:
-                                colorDisplaying[colorName] ?? const SizedBox(),
-                          ),
-                        )
-                        .toList()),
-                ],
-              ),
-              const SizedBox(height: 30),
-              ForecastTabs(todayHora: todayHora)
-            ],
-          ),
+                      )
+                      .toList()),
+              ],
+            ),
+            const SizedBox(height: 30),
+            ForecastTabs(horaRepository: HoraRepository(),)
+          ],
         ),
       ),
     );

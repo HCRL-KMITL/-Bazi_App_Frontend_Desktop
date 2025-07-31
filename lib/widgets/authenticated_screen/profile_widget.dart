@@ -73,7 +73,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditInfoWidget(
+                          builder: (context) => EditInfoScreen(
                             oldData: widget.userData,
                           ),
                         ),

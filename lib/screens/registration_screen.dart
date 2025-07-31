@@ -23,16 +23,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          IconButton(
-            onPressed: () => AuthenticationRepository().signOut(),
-            icon: const Icon(Icons.logout),
-            color: wColor,
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).primaryColor,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () => AuthenticationRepository().signOut(),
+      //       icon: const Icon(Icons.logout),
+      //       color: wColor,
+      //     ),
+      //   ],
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

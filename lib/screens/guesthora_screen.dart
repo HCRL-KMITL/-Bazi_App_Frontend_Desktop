@@ -47,30 +47,6 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   foregroundColor: wColor,
-      //   elevation: 15,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back, color: Colors.white),
-      //     onPressed: () {
-      //       if (args?['from'] == 'member') {
-      //         Navigator.pushReplacement(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => const MemberScreen(),
-      //             ));
-      //       } else {
-      //         Navigator.pushReplacement(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => const WelcomeScreen(),
-      //             ));
-      //       }
-      //     },
-      //   ),
-      //   title: const Text("Bazi Chart"),
-      // ),
       body: FutureBuilder<BaziChart>(
         future: futureBaziChart,
         builder: (context, snapshot) {
@@ -81,7 +57,7 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
               children: [
                 CircularProgressIndicator(color: fcolor),
                 const SizedBox(height: 10),
-                Text("กำลังดึงข้อมูล... กรุณารอสักครู่",
+                Text("กำลังโหลด...",
                     style: Theme.of(context).textTheme.bodyMedium),
               ],
             ));
@@ -96,16 +72,38 @@ class _GuestHoraScreenState extends State<GuestHoraScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    const Spacer(),
+                    IconButton(
+                      iconSize: 30,
+                      color: wColor,
+                      style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      onPressed: () async {
+                        await AuthenticationRepository().signOut();
+                      },
+                      icon: const Icon(Icons.logout),
+                    ),
+                  ],
+                ),
                 FlipCard(
                     direction: FlipDirection.HORIZONTAL,
                     front: Column(
                       children: [
-                        const SizedBox(height: 20),
                         Center(
                           child: Text("ผลการทำนาย",
                               style: Theme.of(context).textTheme.headlineMedium),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: MediaQuery.of(context).size.height * 0.67,

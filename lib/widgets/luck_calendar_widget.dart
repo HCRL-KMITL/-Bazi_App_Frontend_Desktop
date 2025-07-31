@@ -88,7 +88,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                         );
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 7),
                     child: Container(
                       width: 38,
                       height: 38,
@@ -107,18 +107,18 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                   final textColor = dayColors["text"]!;
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 7),
                     child: Container(
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
                         color: bgColor,
                         shape: BoxShape.circle,
-                        boxShadow: const [
+                        boxShadow: [
                           BoxShadow(
-                            color: Colors.black,
+                            color: Colors.grey[700]!,
                             spreadRadius: 3,
-                            blurRadius: 10,
+                            blurRadius: 5,
                           ),
                         ],
                       ),
@@ -132,7 +132,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                 },
                 outsideBuilder: (context, day, focusedDay) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 7),
                     child: Container(
                       width: 45,
                       height: 45,
@@ -147,7 +147,7 @@ class _LuckCalendarWidgetState extends State<LuckCalendarWidget> {
                   );
                 },
               ),
-              daysOfWeekHeight: 40,
+              daysOfWeekHeight: 30,
               locale: 'th_TH',
               focusedDay: DateTime(currentYear, month, 1),
               firstDay: DateTime(currentYear, month - 1, 25),

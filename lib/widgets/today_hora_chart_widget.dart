@@ -31,7 +31,7 @@ class TodayHoraChart extends StatelessWidget {
           children: [
             SizedBox(
               width: 40,
-              height: 160,
+              height: 155,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: yLabels.map((v) {
@@ -84,14 +84,50 @@ class TodayHoraChart extends StatelessWidget {
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          reservedSize: 30,
-                          getTitlesWidget: (value, meta) => Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              'ย.${value.toInt() + 1}',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ),
+                          reservedSize: 50,
+                          getTitlesWidget: (value, meta) {
+                            int index = value.toInt();
+
+                            List<String> chineseHours = [
+                              '23:00-01:00',
+                              '01:00-03:00',
+                              '03:00-05:00',
+                              '05:00-07:00',
+                              '07:00-09:00',
+                              '09:00-11:00',
+                              '11:00-13:00',
+                              '13:00-15:00',
+                              '15:00-17:00',
+                              '17:00-19:00',
+                              '19:00-21:00',
+                              '21:00-23:00',
+                            ];
+
+                            final tooltipText = (index >= 0 && index < chineseHours.length)
+                                ? chineseHours[index]
+                                : '';
+
+                            return Tooltip(
+                              message: tooltipText,
+                              textStyle: const TextStyle(
+                                color: wColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'ย.${index + 1}',
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       leftTitles: const AxisTitles(
