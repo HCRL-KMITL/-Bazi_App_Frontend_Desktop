@@ -16,6 +16,25 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   final monthValue = thaiMonth.keys.toList();
   int selectedMonth = DateTime.now().month - 1;
 
+  void changeMonth(int delta) {
+    setState(() {
+      selectedMonth += delta;
+      if (selectedMonth < 0) {
+        selectedMonth = 11;
+      } else if (selectedMonth > 11) {
+        selectedMonth = 0;
+      }
+    });
+  }
+
+  List<DropdownMenuItem<String>> get monthItems => List.generate(
+        thaiMonth.length,
+        (index) => DropdownMenuItem(
+          value: monthValue[index],
+          child: Text(month[index]),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,57 +54,69 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             const SizedBox(height: 20),
             Row(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: DropdownButton(
-                    underline: const SizedBox(),
-                    isExpanded: true,
-                    iconEnabledColor: Colors.white,
-                    value: monthValue[selectedMonth],
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.black),
-                    selectedItemBuilder: (BuildContext context) {
-                      return monthValue.map<Widget>((String i) {
-                        return Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            thaiMonth[i] ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: wColor),
+                IconButton(
+                  icon: const Icon(Icons.arrow_left),
+                  onPressed: () => changeMonth(-1),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 50,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      iconEnabledColor: Colors.white,
+                      value: monthValue[selectedMonth],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black),
+                      selectedItemBuilder: (BuildContext context) {
+                        return monthValue.map<Widget>((String i) {
+                          return Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              thaiMonth[i] ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: wColor),
+                            ),
+                          );
+                        }).toList();
+                      },
+                      items: monthValue
+                          .map<DropdownMenuItem<String>>((String i) {
+                        return DropdownMenuItem<String>(
+                          value: i,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              thaiMonth[i] ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.black),
+                            ),
                           ),
                         );
-                      }).toList();
-                    },
-                    items: monthValue.map<DropdownMenuItem<String>>((String i) {
-                      return DropdownMenuItem<String>(
-                        value: i,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            thaiMonth[i] ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMonth = int.parse(value!) - 1;
-                      });
-                    },
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedMonth = int.parse(value!) - 1;
+                        });
+                      },
+                    ),
                   ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_right),
+                  onPressed: () => changeMonth(1),
                 ),
                 const Spacer(),
                 Container(

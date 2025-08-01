@@ -1,9 +1,10 @@
+import 'package:bazi_app_frontend/repositories/hora_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bazi_app_frontend/configs/theme.dart';
 
 class ForecastTabs extends StatefulWidget {
-  final Map<String, dynamic> todayHora;
-  const ForecastTabs({super.key, required this.todayHora});
+  final HoraRepository horaRepository;
+  const ForecastTabs({super.key, required this.horaRepository});
 
   @override
   State<ForecastTabs> createState() => _ForecastTabsState();
@@ -12,11 +13,13 @@ class ForecastTabs extends StatefulWidget {
 class _ForecastTabsState extends State<ForecastTabs>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late Future<Map<String, dynamic>> _horaFuture;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _horaFuture = widget.horaRepository.getDailyHora();
   }
 
   @override
@@ -25,23 +28,20 @@ class _ForecastTabsState extends State<ForecastTabs>
     super.dispose();
   }
 
-  Widget buildPredictionTab(String key) {
-    final text = widget.todayHora["monthlyPrediction"]?[key];
-    if (text == null) {
-      return const Center(
-        child: Text("กำลังโหลด...", style: TextStyle(color: Colors.white)),
-      );
-    } else {
-      return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: wColor),
-          ),
+  Widget buildPredictionTab(Map<String, dynamic> todayHora, String key) {
+    //print("Building tab for ${ widget.todayHora["hora"]}");
+    final text = todayHora["hora"]?[key] ?? "ไม่มีข้อมูล";
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          text,
+          style:
+              Theme.of(context).textTheme.bodyMedium?.copyWith(color: wColor),
         ),
-      );
-    }
+      ),
+    );
   }
 
   @override
@@ -54,7 +54,7 @@ class _ForecastTabsState extends State<ForecastTabs>
       children: [
         Text("พยากรณ์ประจำเดือน",
             style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 10),
+        const SizedBox(height: 30),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -69,18 +69,21 @@ class _ForecastTabsState extends State<ForecastTabs>
                 },
                 child: Container(
                   width: 137.5,
-                  height: 40,
+                  height: 50,
                   margin: const EdgeInsets.only(right: 8),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: selected ? Theme.of(context).primaryColor : const Color.fromARGB(255, 243, 197, 203),
+                    color: selected
+                        ? Theme.of(context).primaryColor
+                        : const Color.fromARGB(255, 243, 197, 203),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10),
                     ),
                     border: Border.all(
-                      color:
-                          selected ? Theme.of(context).primaryColor : Colors.transparent,
+                      color: selected
+                          ? Theme.of(context).primaryColor
+                          : Colors.transparent,
                       width: 2,
                     ),
                   ),
@@ -97,41 +100,72 @@ class _ForecastTabsState extends State<ForecastTabs>
           ),
         ),
         SizedBox(
-          height: 240,
-          child: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 244, 174, 174),
-                  borderRadius: BorderRadius.zero,
-                ),
+            height: 600,
+            child: FutureBuilder(
+                future: _horaFuture,
+                builder: (context, asyncSnapshot) {
+                  if (asyncSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (asyncSnapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "เกิดข้อผิดพลาด: ${asyncSnapshot.error}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: wColor),
+                      ),
+                    );
+                  }
+                  if (asyncSnapshot.hasData) {
+                    final todayHora = asyncSnapshot.data!;
+                    return Stack(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 244, 174, 174),
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: currentIndex == 0
+                                ? Radius.zero
+                                : const Radius.circular(10),
+                            topRight: currentIndex == 3
+                                ? Radius.zero
+                                : const Radius.circular(10),
+                            bottomLeft: const Radius.circular(10),
+                            bottomRight: const Radius.circular(10),
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(25),
+                        child: TabBarView(
+                          controller: _tabController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            buildPredictionTab(todayHora, "health"),
+                            buildPredictionTab(todayHora, "love"),
+                            buildPredictionTab(todayHora, "money"),
+                            buildPredictionTab(todayHora, "work"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                  }
+                  return const Center(
+                    child: Text(
+                      "ไม่มีข้อมูล",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+                )
               ),
-
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: currentIndex == 0 ? Radius.zero : const Radius.circular(10),
-                    topRight: currentIndex == 3 ? Radius.zero : const Radius.circular(10),
-                    bottomLeft: const Radius.circular(10),
-                    bottomRight: const Radius.circular(10),
-                  ),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: TabBarView(
-                  controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    buildPredictionTab("health"),
-                    buildPredictionTab("love"),
-                    buildPredictionTab("money"),
-                    buildPredictionTab("work"),
-                  ],
-                ),
-              ),
-            ],
-          )
-        ),
       ],
     );
   }

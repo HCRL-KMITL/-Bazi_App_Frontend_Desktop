@@ -140,7 +140,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               ],
             ),
             const SizedBox(height: 30),
-            ForecastTabs(horaRepository: HoraRepository(),)
+            // ForecastTabs(horaRepository: HoraRepository(),)
           ],
         ),
       ),

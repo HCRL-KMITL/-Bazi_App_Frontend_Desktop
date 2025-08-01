@@ -19,7 +19,7 @@ class HoraRepository {
     final User user = FirebaseAuth.instance.currentUser!;
     final String? tk = await user.getIdToken();
     String dailyUri = '$apiUrl/horo_scope/daily';
-    String monthlyUri = '$apiUrl/horo_scope/';
+    String monthlyUri = '$apiUrl/horo_scope/keng2025';
     final dailyResponse = await http.get(
       Uri.parse(dailyUri),
       headers: {
@@ -27,13 +27,19 @@ class HoraRepository {
         "Content-Type": "application/json",
       },
     );
-    final monthlyResponse = await http.get(
+    print("Daily Hora API GOT Code: ${dailyResponse.statusCode}, Body: ${dailyResponse.body}");
+    final monthlyResponse = await http.post(
       Uri.parse(monthlyUri),
       headers: {
-        "Authorization": "$tk",
         "Content-Type": "application/json",
       },
+      body: jsonEncode({
+        "name" : "warin",
+        "birth_date" : "2004-11-14 09:09:00",
+        "gender": 0
+      })
     );
+    print("KENG API GOT Code: ${monthlyResponse.statusCode}, Body: ${jsonDecode(monthlyResponse.body)}");
     final calendarData = await getCalendarData(DateTime.now().month);
     String todayStatus = "";
     if (calendarData["goodDate"].contains(DateTime.now().day)) {
@@ -47,10 +53,11 @@ class HoraRepository {
       "status": todayStatus,
       "colors": jsonDecode(dailyResponse.body)["colors"],
       "hours": jsonDecode(dailyResponse.body)["hours"],
-      "monthlyPrediction": jsonDecode(monthlyResponse.body),
+      "hora": jsonDecode(monthlyResponse.body),
     };
-    //print("Daily Hora API GOT Code: ${dailyResponse.statusCode}, Body: ${dailyResponse.body} And Today is $todayStatus");
-    //print("Monthly Hora API GOT Code: ${monthlyResponse.statusCode}, Body: ${jsonDecode(monthlyResponse.body)}");
+    
+    // print("Monthly Hora API GOT Code: ${monthlyResponse.statusCode}, Body: ${jsonDecode(monthlyResponse.body)}");
+    print("todayhoro ${todayHoro}");
     return todayHoro;
   }
 
